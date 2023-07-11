@@ -91,6 +91,8 @@ func main() {
 			glog.Warning(ctx, "启动speed_cron失败，原因：", err.Error())
 		}
 		glog.Debug(ctx, "启动speed_cron结果：", string(startOut))
+		glog.Info(ctx, "更新完成...程序会在5s后自动关闭...")
+		time.Sleep(5 * time.Second)
 	}
 
 }
