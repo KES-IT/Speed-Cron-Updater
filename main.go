@@ -98,7 +98,7 @@ func main() {
 }
 
 func getLatestVersion() (version string) {
-	url := "https://api.github.com/repos/hamster1963/Speed-Cron/releases/latest"
+	url := "http://120.24.211.49:10441/GetLatestVersion"
 	response, err := g.Client().Get(context.TODO(), url)
 	if err != nil {
 		return ""
@@ -113,5 +113,5 @@ func getLatestVersion() (version string) {
 	if err != nil {
 		return ""
 	}
-	return githubResJson.Get("tag_name").String()
+	return githubResJson.Get("github_res.assets.tag_name").String()
 }
