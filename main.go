@@ -76,6 +76,7 @@ func main() {
 			return
 		}
 		_ = f.Close()
+
 		glog.Info(ctx, "下载speed_cron成功...")
 
 		versionCmd := exec.Command("client/core_bin/speed_cron.exe", "version")
@@ -101,6 +102,7 @@ func getLatestVersion() (version string) {
 	url := "http://120.24.211.49:10441/GetLatestVersion"
 	response, err := g.Client().Get(context.TODO(), url)
 	if err != nil {
+		glog.Warning(context.TODO(), "请求github最新版本失败，原因：", err.Error())
 		return ""
 	}
 	defer func(response *gclient.Response) {
@@ -111,6 +113,7 @@ func getLatestVersion() (version string) {
 	}(response)
 	githubResJson, err := gjson.DecodeToJson(response.ReadAllString())
 	if err != nil {
+		glog.Warning(context.TODO(), "解析response失败，原因：", err.Error())
 		return ""
 	}
 	return githubResJson.Get("github_res.assets.tag_name").String()
