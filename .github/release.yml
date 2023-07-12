@@ -10,7 +10,7 @@ changelog:
       - Merge remote-tracking branch
       - Merge branch
       - go mod tidy
-  groups:
+  categories:
     - title: "👒Dependency updates"
       regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
       order: 300
