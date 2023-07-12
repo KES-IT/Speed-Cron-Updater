@@ -16,10 +16,12 @@ import (
 )
 
 func main() {
-	var ctx = context.TODO()
+	var (
+		ctx       = context.TODO()
+		latestTag = false
+	)
 	glog.Info(ctx, "开始更新检测...")
 	glog.Debug(ctx, "检测speed_cron文件是否存在...")
-	latestTag := false
 	if gfile.Exists("client/core_bin/speed_cron.exe") {
 		glog.Debug(ctx, "speed_cron文件存在，开始检查版本...")
 		// 检测版本
@@ -35,13 +37,18 @@ func main() {
 		}
 		// 与服务器版本比较
 		githubVersion := getLatestVersion()
-		glog.Info(ctx, "目前最新githubVersion为: ", githubVersion)
-		if githubVersion != string(versionOut) {
-			glog.Info(ctx, "speed_cron版本不是最新，开始下载...")
+		if githubVersion == "" {
+			glog.Warning(ctx, "获取github最新版本失败，无法比较版本，将自动下载最新版本")
+			return
 		} else {
-			glog.Info(ctx, "speed_cron版本是最新，无需下载...")
-			latestTag = true
-			time.Sleep(5 * time.Second)
+			glog.Info(ctx, "目前最新githubVersion为: ", githubVersion)
+			if githubVersion != string(versionOut) {
+				glog.Info(ctx, "speed_cron版本不是最新，开始下载...")
+			} else {
+				glog.Info(ctx, "speed_cron版本是最新，无需下载...")
+				latestTag = true
+				time.Sleep(5 * time.Second)
+			}
 		}
 	} else {
 		glog.Debug(ctx, "speed_cron文件不存在，开始下载...")
