@@ -74,4 +74,4 @@ ignore_tags = "v.*-beta.*"
 # sort the tags topologically
 topo_order = false
 # sort the commits inside sections by oldest/newest order
-sort_commits = "newest"
+sort_commits = "oldest"
