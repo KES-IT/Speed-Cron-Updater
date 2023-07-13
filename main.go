@@ -2,15 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/gclient"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/glog"
-	"github.com/schollz/progressbar/v3"
-	"io"
-	"os"
 	"os/exec"
 	"time"
 )
@@ -64,24 +60,12 @@ func main() {
 		// 下载最新版本
 		exeUrl := "https://gh.xinyu.today/https://github.com/hamster1963/Speed-Cron/releases/latest/download/speed_cron_windows_amd64.exe"
 		exe, err := g.Client().Get(ctx, exeUrl)
-		bar := progressbar.NewOptions(int(exe.ContentLength),
-			progressbar.OptionSetWriter(os.Stdout),
-			progressbar.OptionEnableColorCodes(false),
-			progressbar.OptionShowBytes(true),
-			progressbar.OptionSetRenderBlankState(true),
-			progressbar.OptionSetWidth(14),
-			progressbar.OptionOnCompletion(func() {
-				_, _ = fmt.Fprint(os.Stderr, "\n")
-			}),
-			progressbar.OptionSetDescription("下载最新测速客户端中..."))
-
-		f, _ := os.OpenFile("client/core_bin/speed_cron.exe", os.O_CREATE|os.O_WRONLY, 0644)
-		_, err = io.Copy(io.MultiWriter(f, bar), exe.Body)
+		err = gfile.PutBytes("client/core_bin/speed_cron.exe", exe.ReadAll())
 		if err != nil {
 			glog.Warning(ctx, "下载speed_cron失败，原因：", err.Error())
+			time.Sleep(5 * time.Second)
 			return
 		}
-		_ = f.Close()
 
 		glog.Info(ctx, "下载speed_cron成功...")
 
