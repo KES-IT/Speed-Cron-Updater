@@ -39,7 +39,6 @@ func main() {
 		githubVersion := getLatestVersion()
 		if githubVersion == "" {
 			glog.Warning(ctx, "获取github最新版本失败，无法比较版本，将自动下载最新版本")
-			return
 		} else {
 			glog.Info(ctx, "目前最新githubVersion为: ", githubVersion)
 			if githubVersion != string(versionOut) {
