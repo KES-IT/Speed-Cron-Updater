@@ -34,7 +34,9 @@ func main() {
 		// 与服务器版本比较
 		githubVersion := getLatestVersion()
 		if githubVersion == "" {
-			glog.Warning(ctx, "获取github最新版本失败，无法比较版本，将自动下载最新版本")
+			glog.Warning(ctx, "获取github最新版本失败，无法比较版本")
+			time.Sleep(5 * time.Second)
+			return
 		} else {
 			glog.Info(ctx, "目前最新githubVersion为: ", githubVersion)
 			if githubVersion != string(versionOut) {
@@ -88,6 +90,7 @@ func main() {
 
 }
 
+// getLatestVersion 获取github最新版本
 func getLatestVersion() (version string) {
 	url := "http://120.24.211.49:10441/GetLatestVersion"
 	response, err := g.Client().Get(context.TODO(), url)
@@ -104,6 +107,10 @@ func getLatestVersion() (version string) {
 	githubResJson, err := gjson.DecodeToJson(response.ReadAllString())
 	if err != nil {
 		glog.Warning(context.TODO(), "解析response失败，原因：", err.Error())
+		return ""
+	}
+	if len(githubResJson.Get("data.github_res.asserts").Array()) == 0 {
+		glog.Warning(context.TODO(), "解析response失败，原因：", "github_res.asserts为空")
 		return ""
 	}
 	return githubResJson.Get("data.github_res.tag_name").String()
